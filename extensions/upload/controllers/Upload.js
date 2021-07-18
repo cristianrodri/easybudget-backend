@@ -85,9 +85,10 @@ module.exports = {
       return ctx.notFound("file.notFound");
     }
 
-    const relatedId = file.related[0].id;
+    const relatedId = file.related?.[0]?.id;
+    const isAdmin = ctx.state?.admin;
 
-    if (userId !== relatedId) {
+    if (userId !== relatedId && !isAdmin) {
       return ctx.unauthorized(
         "You are not allowed to delete file on user " + relatedId
       );
