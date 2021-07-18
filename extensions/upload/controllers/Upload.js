@@ -27,20 +27,19 @@ const sanitize = (data, options = {}) => {
 
 module.exports = {
   async upload(ctx) {
-    const userId = ctx.state?.user.id;
+    const user = ctx.state.user;
     const refId = +ctx.request.body.refId;
-    console.log(userId, refId);
 
-    if (!ctx.state?.user) {
+    if (!user?.id) {
       return ctx.badRequest(null, [
         { messages: [{ id: "No authorization header was found" }] },
       ]);
     }
 
     // only add or update file on your own account
-    if (userId !== refId) {
+    if (user.id !== refId) {
       return ctx.unauthorized(
-        "You are not allowed to add or update file on user " + refId
+        "You are not allowed to add or update file on user with refId " + refId
       );
     }
 
@@ -61,17 +60,33 @@ module.exports = {
     } = ctx;
     const controller = resolveController(ctx);
 
-    if (id && (_.isEmpty(files) || files.size === 0)) {
-      return controller.updateFileInfo(ctx);
-    }
-
     if (_.isEmpty(files) || files.size === 0) {
       throw strapi.errors.badRequest(null, {
         errors: [{ id: "Upload.status.empty", message: "Files are empty" }],
       });
     }
 
-    await (id ? controller.replaceFile : controller.uploadFiles)(ctx);
+    const userData = await strapi.plugins[
+      "users-permissions"
+    ].services.user.fetch({
+      id: user.id,
+    });
+
+    // if user has previous avatar and check if query id is equal to user's avatar id
+    if (userData.avatar?.id) {
+      if (!id)
+        return ctx.badRequest(
+          "The user is using avatar currently. You can only update avatar by adding file id on params"
+        );
+      if (userData.avatar.id !== +id)
+        return ctx.badRequest(
+          "You are not allowed to update file with id " + id
+        );
+    }
+
+    await (userData.avatar?.id
+      ? controller.replaceFile
+      : controller.uploadFiles)(ctx);
   },
   async destroy(ctx) {
     const { id: userId } = ctx.state?.user;
