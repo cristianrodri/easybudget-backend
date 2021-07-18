@@ -40,7 +40,7 @@ module.exports = {
     // only add or update file on your own account
     if (userId !== refId) {
       return ctx.unauthorized(
-        "You are not allowed add or update file on user " + refId
+        "You are not allowed to add or update file on user " + refId
       );
     }
 
@@ -74,7 +74,7 @@ module.exports = {
     await (id ? controller.replaceFile : controller.uploadFiles)(ctx);
   },
   async destroy(ctx) {
-    console.log("pikoro");
+    const { id: userId } = ctx.state?.user;
     const {
       params: { id },
     } = ctx;
@@ -83,6 +83,14 @@ module.exports = {
 
     if (!file) {
       return ctx.notFound("file.notFound");
+    }
+
+    const relatedId = file.related[0].id;
+
+    if (userId !== relatedId) {
+      return ctx.unauthorized(
+        "You are not allowed to delete file on user " + relatedId
+      );
     }
 
     await strapi.plugins["upload"].services.upload.remove(file);
