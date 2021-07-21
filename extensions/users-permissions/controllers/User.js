@@ -2,6 +2,11 @@
 
 const _ = require("lodash");
 const { sanitizeEntity } = require("strapi-utils");
+const validator = require("email-validator");
+
+const formatError = (error) => [
+  { messages: [{ id: error.id, message: error.message, field: error.field }] },
+];
 
 module.exports = {
   async update(ctx) {
@@ -71,6 +76,17 @@ module.exports = {
     }
 
     if (_.has(ctx.request.body, "email") && advancedConfigs.unique_email) {
+      if (!validator.validate(email)) {
+        return ctx.badRequest(
+          null,
+          formatError({
+            id: "Auth.form.error.email",
+            message: "Please provide a valid email",
+            field: ["email"],
+          })
+        );
+      }
+
       const userWithSameEmail = await strapi
         .query("user", "users-permissions")
         .findOne({ email: email.toLowerCase() });
