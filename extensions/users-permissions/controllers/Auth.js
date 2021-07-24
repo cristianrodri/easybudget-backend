@@ -11,9 +11,8 @@ const crypto = require("crypto");
 const _ = require("lodash");
 const grant = require("grant-koa");
 const { sanitizeEntity } = require("strapi-utils");
+const validator = require("email-validator");
 
-const emailRegExp =
-  /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 const formatError = (error) => [
   { messages: [{ id: error.id, message: error.message, field: error.field }] },
 ];
@@ -103,7 +102,7 @@ module.exports = {
     }
 
     // Check if the provided email is valid or not.
-    const isEmail = emailRegExp.test(params.email);
+    const isEmail = validator.validate(params.email);
 
     if (isEmail) {
       params.email = params.email.toLowerCase();
@@ -180,14 +179,13 @@ module.exports = {
         user: sanitizedUser,
       });
     } catch (err) {
-      const adminError = _.includes(err.message, "username")
-        ? {
-            id: "Auth.form.error.username.taken",
-            message: "Username already taken",
-          }
-        : { id: "Auth.form.error.email.taken", message: "Email already taken" };
-
-      ctx.badRequest(null, formatError(adminError));
+      ctx.badRequest(
+        null,
+        formatError({
+          id: "Auth.form.error.username.taken",
+          message: "Username already taken",
+        })
+      );
     }
   },
 };
