@@ -87,6 +87,17 @@ module.exports = {
       );
     }
 
+    // Throw an error if password has less than 8 characters.
+    if (params.password.length < 8) {
+      return ctx.badRequest(
+        null,
+        formatError({
+          id: "Auth.form.error.password.format",
+          message: "Your password must contain at least 8 characters",
+        })
+      );
+    }
+
     const role = await strapi
       .query("role", "users-permissions")
       .findOne({ type: settings.default_role }, []);
