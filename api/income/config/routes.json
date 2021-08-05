@@ -2,48 +2,48 @@
   "routes": [
     {
       "method": "GET",
-      "path": "/budgets",
-      "handler": "budget.find",
+      "path": "/incomes",
+      "handler": "income.find",
       "config": {
         "policies": []
       }
     },
     {
       "method": "GET",
-      "path": "/budgets/count",
-      "handler": "budget.count",
+      "path": "/incomes/count",
+      "handler": "income.count",
       "config": {
         "policies": []
       }
     },
     {
       "method": "GET",
-      "path": "/budgets/:id",
-      "handler": "budget.findOne",
+      "path": "/incomes/:id",
+      "handler": "income.findOne",
       "config": {
         "policies": []
       }
     },
     {
       "method": "POST",
-      "path": "/budgets",
-      "handler": "budget.create",
+      "path": "/incomes",
+      "handler": "income.create",
       "config": {
         "policies": []
       }
     },
     {
       "method": "PUT",
-      "path": "/budgets/:id",
-      "handler": "budget.update",
+      "path": "/incomes/:id",
+      "handler": "income.update",
       "config": {
         "policies": []
       }
     },
     {
       "method": "DELETE",
-      "path": "/budgets/:id",
-      "handler": "budget.delete",
+      "path": "/incomes/:id",
+      "handler": "income.delete",
       "config": {
         "policies": []
       }

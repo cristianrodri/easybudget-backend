@@ -1,0 +1,29 @@
+{
+  "kind": "collectionType",
+  "collectionName": "income_types",
+  "info": {
+    "name": "IncomeTypes",
+    "description": ""
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true,
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "type": {
+      "type": "string",
+      "required": true
+    },
+    "incomes": {
+      "via": "income_type",
+      "collection": "income"
+    },
+    "user": {
+      "plugin": "users-permissions",
+      "model": "user",
+      "via": "income_types"
+    }
+  }
+}

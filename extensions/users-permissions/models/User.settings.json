@@ -59,10 +59,6 @@
       "plugin": "users-permissions",
       "configurable": false
     },
-    "budgets": {
-      "collection": "budget",
-      "via": "user"
-    },
     "avatar": {
       "model": "file",
       "via": "related",
@@ -72,6 +68,22 @@
       "plugin": "upload",
       "required": false,
       "pluginOptions": {}
+    },
+    "expenses": {
+      "via": "user",
+      "collection": "expense"
+    },
+    "expense_types": {
+      "via": "user",
+      "collection": "expense-type"
+    },
+    "income_types": {
+      "via": "user",
+      "collection": "income-types"
+    },
+    "incomes": {
+      "via": "user",
+      "collection": "income"
     }
   }
 }
