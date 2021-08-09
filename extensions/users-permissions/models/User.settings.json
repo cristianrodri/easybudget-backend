@@ -69,13 +69,13 @@
       "required": false,
       "pluginOptions": {}
     },
-    "budgets": {
-      "via": "user",
-      "collection": "budget"
-    },
     "budget_types": {
       "via": "user",
       "collection": "budget-type"
+    },
+    "budgets": {
+      "via": "user",
+      "collection": "budget"
     }
   }
 }

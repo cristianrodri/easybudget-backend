@@ -107,4 +107,9 @@ module.exports = {
 
     return sanitizeEntity(entity, { model: strapi.models["budget-type"] });
   },
+  count(ctx) {
+    return strapi.services["budget-type"].count({
+      "user.id": ctx.state.user.id,
+    });
+  },
 };

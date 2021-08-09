@@ -7,6 +7,8 @@
 
 const { sanitizeEntity } = require("strapi-utils");
 
+const unauthorizedMessage = `This budget doesn't exist or belongs to another user.`;
+
 module.exports = {
   // Get logged user budget-type
   async find(ctx) {
@@ -56,18 +58,20 @@ module.exports = {
   // update one income type
   async update(ctx) {
     const { id } = ctx.params;
-    const { name } = ctx.request.body;
 
-    const budgetTypes = await strapi.services.budget.findOne({
+    const budget = await strapi.services.budget.findOne({
       id: ctx.params.id,
       "user.id": ctx.state.user.id,
     });
 
-    if (!budgetTypes) {
+    if (!budget) {
       return ctx.unauthorized(unauthorizedMessage);
     }
 
-    const entity = await strapi.services.budget.update({ id }, { name });
+    const entity = await strapi.services.budget.update(
+      { id },
+      ctx.request.body
+    );
 
     return sanitizeEntity(entity, { model: strapi.models.budget });
   },
@@ -87,5 +91,10 @@ module.exports = {
     const entity = await strapi.services.budget.delete({ id });
 
     return sanitizeEntity(entity, { model: strapi.models.budget });
+  },
+  count(ctx) {
+    return strapi.services.budget.count({
+      "user.id": ctx.state.user.id,
+    });
   },
 };

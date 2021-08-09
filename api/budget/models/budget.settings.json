@@ -2,8 +2,7 @@
   "kind": "collectionType",
   "collectionName": "budgets",
   "info": {
-    "name": "budget",
-    "description": ""
+    "name": "budget"
   },
   "options": {
     "increments": true,
@@ -14,21 +13,22 @@
   "attributes": {
     "name": {
       "type": "string",
-      "required": true
+      "required": true,
+      "maxLength": 50
     },
     "money": {
       "type": "integer",
       "required": true,
       "min": 1
     },
+    "budget_type": {
+      "model": "budget-type",
+      "via": "budgets"
+    },
     "user": {
       "plugin": "users-permissions",
       "model": "user",
       "via": "budgets"
-    },
-    "budget_type": {
-      "via": "budgets",
-      "model": "budget-type"
     }
   }
 }
