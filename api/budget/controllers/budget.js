@@ -58,14 +58,29 @@ module.exports = {
   // update one income type
   async update(ctx) {
     const { id } = ctx.params;
+    const user = ctx.state.user;
+    const budgetTypeId = ctx.request.body?.["budget_type"];
 
     const budget = await strapi.services.budget.findOne({
       id: ctx.params.id,
-      "user.id": ctx.state.user.id,
+      "user.id": user.id,
     });
 
     if (!budget) {
       return ctx.unauthorized(unauthorizedMessage);
+    }
+
+    // If budget type is provided in request.body, check if exist, otherwise return error
+    if (budgetTypeId) {
+      const budgetType = await strapi.services["budget-type"].findOne({
+        id: budgetTypeId,
+        "user.id": user.id,
+      });
+
+      if (!budgetType)
+        return ctx.badRequest(
+          "You cannot move this budget in budget-type with id " + budgetTypeId
+        );
     }
 
     const entity = await strapi.services.budget.update(

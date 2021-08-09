@@ -74,12 +74,12 @@ module.exports = {
     const { id } = ctx.params;
     const { name } = ctx.request.body;
 
-    const budgetTypes = await strapi.services["budget-type"].findOne({
+    const budgetType = await strapi.services["budget-type"].findOne({
       id: ctx.params.id,
       "user.id": ctx.state.user.id,
     });
 
-    if (!budgetTypes) {
+    if (!budgetType) {
       return ctx.unauthorized(unauthorizedMessage);
     }
 
