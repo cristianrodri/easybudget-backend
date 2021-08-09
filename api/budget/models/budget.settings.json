@@ -1,8 +1,8 @@
 {
   "kind": "collectionType",
-  "collectionName": "income_types",
+  "collectionName": "budgets",
   "info": {
-    "name": "IncomeTypes",
+    "name": "budget",
     "description": ""
   },
   "options": {
@@ -12,18 +12,23 @@
   },
   "pluginOptions": {},
   "attributes": {
-    "type": {
+    "name": {
       "type": "string",
       "required": true
     },
-    "incomes": {
-      "via": "income_type",
-      "collection": "income"
+    "money": {
+      "type": "integer",
+      "required": true,
+      "min": 1
     },
     "user": {
       "plugin": "users-permissions",
       "model": "user",
-      "via": "income_types"
+      "via": "budgets"
+    },
+    "budget_type": {
+      "via": "budgets",
+      "model": "budget-type"
     }
   }
 }

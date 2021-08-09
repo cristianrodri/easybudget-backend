@@ -69,21 +69,13 @@
       "required": false,
       "pluginOptions": {}
     },
-    "expenses": {
+    "budgets": {
       "via": "user",
-      "collection": "expense"
+      "collection": "budget"
     },
-    "expense_types": {
+    "budget_types": {
       "via": "user",
-      "collection": "expense-type"
-    },
-    "income_types": {
-      "via": "user",
-      "collection": "income-types"
-    },
-    "incomes": {
-      "via": "user",
-      "collection": "income"
+      "collection": "budget-type"
     }
   }
 }

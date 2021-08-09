@@ -1,9 +1,8 @@
 {
   "kind": "collectionType",
-  "collectionName": "incomes",
+  "collectionName": "budget_types",
   "info": {
-    "name": "Income",
-    "description": ""
+    "name": "budgetType"
   },
   "options": {
     "increments": true,
@@ -14,22 +13,24 @@
   "attributes": {
     "name": {
       "type": "string",
-      "required": true,
-      "maxLength": 30
+      "required": true
     },
-    "price": {
-      "type": "integer",
-      "required": true,
-      "min": 1
-    },
-    "income_type": {
-      "via": "incomes",
-      "model": "income-types"
+    "type": {
+      "type": "enumeration",
+      "enum": [
+        "income",
+        "expense"
+      ],
+      "required": true
     },
     "user": {
       "plugin": "users-permissions",
       "model": "user",
-      "via": "incomes"
+      "via": "budget_types"
+    },
+    "budgets": {
+      "via": "budget_type",
+      "collection": "budget"
     }
   }
 }
