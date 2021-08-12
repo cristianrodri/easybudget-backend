@@ -17,7 +17,6 @@ const formatError = (error) => [
 
 module.exports = {
   async callback(ctx) {
-    console.log("pikoro");
     const provider = ctx.params.provider || "local";
     const params = ctx.request.body;
 
@@ -76,7 +75,7 @@ module.exports = {
           null,
           formatError({
             id: "Auth.form.error.invalid",
-            message: "Identifier or password invalid.",
+            message: "User not found.",
           })
         );
       }
@@ -125,7 +124,7 @@ module.exports = {
           null,
           formatError({
             id: "Auth.form.error.invalid",
-            message: "Identifier or password invalid.",
+            message: "Invalid password.",
           })
         );
       } else {
