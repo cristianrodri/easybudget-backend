@@ -22,6 +22,13 @@ module.exports = {
               id: entity.id,
             });
           });
+
+          // delete all budget types related to the deleted user
+          user["budget_types"].forEach((entity) => {
+            strapi.services["budget-type"].delete({
+              id: entity.id,
+            });
+          });
         });
       } else {
         // code used when data is removed by user
@@ -40,7 +47,16 @@ module.exports = {
             id: entity.id,
           });
         });
+
         console.log("Budgets deleted after deleting user");
+
+        // delete all budget types related to the deleted user
+        result["budget_types"].forEach((entity) => {
+          strapi.services["budget-type"].delete({
+            id: entity.id,
+          });
+        });
+        console.log("Budget types deleted after deleting user");
       }
     },
   },
