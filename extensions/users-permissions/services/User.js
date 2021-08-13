@@ -13,7 +13,9 @@ module.exports = {
     }
 
     await strapi.query("user", "users-permissions").update(params, values);
-    return strapi.query("user", "users-permissions").findOne(params, ["role"]);
+    return strapi
+      .query("user", "users-permissions")
+      .findOne(params, ["role", "avatar"]);
   },
   /**
    * Promise to fetch authenticated user.
@@ -22,6 +24,6 @@ module.exports = {
   fetchAuthenticatedUser(id) {
     return strapi
       .query("user", "users-permissions")
-      .findOne({ id }, ["role", "budget_types"]); // budget_types added
+      .findOne({ id }, ["role", "budget_types", "avatar"]); // budget_types added
   },
 };
