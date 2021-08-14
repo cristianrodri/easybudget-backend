@@ -16,6 +16,7 @@ module.exports = {
 
     const entity = await strapi.services.budget.find({
       "user.id": user.id,
+      ...ctx.query,
     });
     return sanitizeEntity(entity, { model: strapi.models.budget });
   },
