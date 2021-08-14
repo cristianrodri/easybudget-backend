@@ -174,6 +174,17 @@ module.exports = {
     }
   },
   async register(ctx) {
+    // if some not accepted property is passed into ctx.request.body, every method return stop returning false
+    const allowedUpdates = Object.keys(ctx.request.body).every((prop) =>
+      ["username", "email", "password"].includes(prop)
+    );
+
+    if (!allowedUpdates) {
+      return ctx.badRequest(
+        "You just need to include email, username and password"
+      );
+    }
+
     const pluginStore = await strapi.store({
       environment: "",
       type: "plugin",

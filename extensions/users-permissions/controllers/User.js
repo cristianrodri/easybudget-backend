@@ -26,6 +26,15 @@ module.exports = {
       return ctx.unauthorized("You are not allowed to update this user");
     }
 
+    // if some not accepted property is passed into ctx.request.body, every method return stop returning false
+    const allowedUpdates = Object.keys(ctx.request.body).every((prop) =>
+      ["username", "email", "password"].includes(prop)
+    );
+
+    if (!allowedUpdates) {
+      return ctx.badRequest("You can only update email, username and password");
+    }
+
     // strapi code
     const advancedConfigs = await strapi
       .store({
