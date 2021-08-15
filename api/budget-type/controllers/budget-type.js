@@ -8,8 +8,6 @@
 const { sanitizeEntity } = require("strapi-utils");
 const lf = new Intl.ListFormat("en");
 
-const unauthorizedMessage = `This budget type doesn't exist or belongs to another user.`;
-
 module.exports = {
   // Get logged user budget-type
   async find(ctx) {
@@ -27,10 +25,6 @@ module.exports = {
       id: ctx.params.id,
       "user.id": ctx.state.user.id,
     });
-
-    if (!budgetType) {
-      return ctx.unauthorized(unauthorizedMessage);
-    }
 
     return sanitizeEntity(budgetType, { model: strapi.models["budget-type"] });
   },
@@ -72,19 +66,23 @@ module.exports = {
   // update one income type
   async update(ctx) {
     const { id } = ctx.params;
-    const { name } = ctx.request.body;
+    const { name, type } = ctx.request.body;
 
     const budgetType = await strapi.services["budget-type"].findOne({
-      id: ctx.params.id,
       "user.id": ctx.state.user.id,
+      name: name.trim(),
+      type: type.trim(),
     });
 
-    if (!budgetType) {
-      return ctx.unauthorized(unauthorizedMessage);
+    // if some budget type is found with same name and the same type (income or expense), the updated one cannot be updated with equal name
+    if (budgetType) {
+      return ctx.badRequest(
+        `You cannot repeat ${budgetType.name} in '${budgetType.type}' type.`
+      );
     }
 
     const entity = await strapi.services["budget-type"].update(
-      { id },
+      { id, user: ctx.state.user.id },
       { name }
     );
 
@@ -92,18 +90,10 @@ module.exports = {
   },
 
   async delete(ctx) {
-    const { id } = ctx.params;
-
-    const budgetTypes = await strapi.services["budget-type"].findOne({
+    const entity = await strapi.services["budget-type"].delete({
       id: ctx.params.id,
       "user.id": ctx.state.user.id,
     });
-
-    if (!budgetTypes) {
-      return ctx.unauthorized(unauthorizedMessage);
-    }
-
-    const entity = await strapi.services["budget-type"].delete({ id });
 
     return sanitizeEntity(entity, { model: strapi.models["budget-type"] });
   },
