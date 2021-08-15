@@ -26,15 +26,29 @@ const sanitize = (data, options = {}) => {
 };
 
 module.exports = {
-  async upload(ctx) {
-    const user = ctx.state.user;
-    const refId = +ctx.request.body.refId;
+  async findOne(ctx) {
+    const {
+      params: { id },
+      state: { user },
+    } = ctx;
 
-    if (!user?.id) {
-      return ctx.badRequest(null, [
-        { messages: [{ id: "No authorization header was found" }] },
-      ]);
+    if (user.avatar.id !== id) {
+      return ctx.unauthorized("You are not allowed to view this avatar");
     }
+
+    const file = await strapi.plugins.upload.services.upload.fetch({
+      id,
+    });
+
+    if (!file) {
+      return ctx.notFound("file.notFound");
+    }
+
+    ctx.body = sanitize(file);
+  },
+  async upload(ctx) {
+    const { user } = ctx.state;
+    const refId = +ctx.request.body.refId;
 
     // only add or update file on your own account
     if (user.id !== refId) {
@@ -73,7 +87,7 @@ module.exports = {
     });
 
     // if user has previous avatar and check if query id is equal to user's avatar id
-    if (userData.avatar?.id) {
+    if (userData?.avatar?.id) {
       if (!id)
         return ctx.badRequest(
           "The user is using avatar currently. You can only update avatar by adding file id on params"
@@ -84,12 +98,12 @@ module.exports = {
         );
     }
 
-    await (userData.avatar?.id
+    await (userData?.avatar?.id
       ? controller.replaceFile
       : controller.uploadFiles)(ctx);
   },
   async destroy(ctx) {
-    const { id: userId } = ctx.state?.user;
+    const { user, isAuthenticatedAdmin } = ctx.state;
     const {
       params: { id },
     } = ctx;
@@ -101,9 +115,8 @@ module.exports = {
     }
 
     const relatedId = file.related?.[0]?.id;
-    const isAdmin = ctx.state?.admin;
 
-    if (userId !== relatedId && !isAdmin) {
+    if (user.id !== relatedId && !isAuthenticatedAdmin) {
       return ctx.unauthorized(
         "You are not allowed to delete file on user " + relatedId
       );
