@@ -11,18 +11,13 @@ const formatError = (error) => [
 module.exports = {
   async update(ctx) {
     // custom code
-    const authUser = ctx.state?.user;
-
-    if (!authUser) {
-      return ctx.badRequest(null, [
-        { messages: [{ id: "No authorization header was found" }] },
-      ]);
-    }
+    const { user: authUser, isAuthenticatedAdmin } = ctx.state;
 
     const { id } = ctx.params;
     const paramsIdIsEqualToAuthId = +id === authUser.id;
 
-    if (!paramsIdIsEqualToAuthId) {
+    // only auth user and admin can update the data
+    if (!paramsIdIsEqualToAuthId && !isAuthenticatedAdmin) {
       return ctx.unauthorized("You are not allowed to update this user");
     }
 
@@ -31,7 +26,7 @@ module.exports = {
       ["username", "email", "password"].includes(prop)
     );
 
-    if (!allowedUpdates) {
+    if (!allowedUpdates && !isAuthenticatedAdmin) {
       return ctx.badRequest("You can only update email, username and password");
     }
 
