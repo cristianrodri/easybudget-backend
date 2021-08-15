@@ -7,8 +7,6 @@
 
 const { sanitizeEntity } = require("strapi-utils");
 
-const unauthorizedMessage = `This budget doesn't exist or belongs to another user.`;
-
 module.exports = {
   // Get logged user budget-type
   async find(ctx) {
@@ -27,10 +25,6 @@ module.exports = {
       id: ctx.params.id,
       "user.id": ctx.state.user.id,
     });
-
-    if (!budget) {
-      return ctx.unauthorized(unauthorizedMessage);
-    }
 
     return sanitizeEntity(budget, { model: strapi.models.budget });
   },
@@ -62,15 +56,6 @@ module.exports = {
     const user = ctx.state.user;
     const budgetTypeId = ctx.request.body?.["budget_type"];
 
-    const budget = await strapi.services.budget.findOne({
-      id: ctx.params.id,
-      "user.id": user.id,
-    });
-
-    if (!budget) {
-      return ctx.unauthorized(unauthorizedMessage);
-    }
-
     // If budget type is provided in request.body, check if exist, otherwise return error
     if (budgetTypeId) {
       const budgetType = await strapi.services["budget-type"].findOne({
@@ -85,7 +70,7 @@ module.exports = {
     }
 
     const entity = await strapi.services.budget.update(
-      { id },
+      { id, user: user.id },
       ctx.request.body
     );
 
@@ -94,23 +79,16 @@ module.exports = {
 
   async delete(ctx) {
     const { id } = ctx.params;
+    const user = ctx.state.user;
 
-    const budget = await strapi.services.budget.findOne({
-      id: ctx.params.id,
-      "user.id": ctx.state.user.id,
-    });
-
-    if (!budget) {
-      return ctx.unauthorized(unauthorizedMessage);
-    }
-
-    const entity = await strapi.services.budget.delete({ id });
+    const entity = await strapi.services.budget.delete({ id, user: user.id });
 
     return sanitizeEntity(entity, { model: strapi.models.budget });
   },
   count(ctx) {
     return strapi.services.budget.count({
       "user.id": ctx.state.user.id,
+      ...ctx.query,
     });
   },
 };
