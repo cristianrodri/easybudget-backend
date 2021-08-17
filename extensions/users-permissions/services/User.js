@@ -26,4 +26,17 @@ module.exports = {
       .query("user", "users-permissions")
       .findOne({ id }, ["role", "budget_types", "avatar"]); // budget_types added
   },
+  /**
+   * Promise to remove a/an user.
+   * @return {Promise}
+   */
+  async remove(params) {
+    const user = await strapi.query("user", "users-permissions").delete(params);
+
+    delete user.budgets;
+    delete user["budget_types"];
+    delete user.avatar;
+
+    return user;
+  },
 };

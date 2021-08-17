@@ -32,4 +32,17 @@ module.exports = {
   findOne(params) {
     return strapi.query("budget-type").findOne(params, []);
   },
+  /**
+   * Promise to delete a record
+   *
+   * @return {Promise}
+   */
+
+  async delete(params) {
+    const budgetType = await strapi.query("budget-type").delete(params);
+
+    delete budgetType.budgets;
+    budgetType.user = budgetType.user.id;
+    return budgetType;
+  },
 };
