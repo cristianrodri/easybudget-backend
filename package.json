@@ -8,11 +8,12 @@
     "start": "strapi start",
     "build": "strapi build",
     "strapi": "strapi",
-    "lint": "eslint --fix \"./**/*.js\""
+    "lint": "eslint --fix \"./**/*.{js,json}\""
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.15.0",
     "eslint": "^7.32.0",
+    "husky": "^7.0.1",
     "prettier": "2.3.2"
   },
   "dependencies": {
@@ -39,6 +40,18 @@
   "engines": {
     "node": ">=10.16.0 <=14.x.x",
     "npm": "^6.0.0"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*": [
+      "eslint --fix",
+      "prettier --write",
+      "git add"
+    ]
   },
   "license": "MIT"
 }
