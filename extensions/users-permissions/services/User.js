@@ -1,4 +1,4 @@
-"use strict";
+'use strict'
 
 module.exports = {
   /**
@@ -8,14 +8,14 @@ module.exports = {
   async edit(params, values) {
     if (values.password) {
       values.password = await strapi.plugins[
-        "users-permissions"
-      ].services.user.hashPassword(values);
+        'users-permissions'
+      ].services.user.hashPassword(values)
     }
 
-    await strapi.query("user", "users-permissions").update(params, values);
+    await strapi.query('user', 'users-permissions').update(params, values)
     return strapi
-      .query("user", "users-permissions")
-      .findOne(params, ["role", "avatar"]);
+      .query('user', 'users-permissions')
+      .findOne(params, ['role', 'avatar'])
   },
   /**
    * Promise to fetch authenticated user.
@@ -23,20 +23,20 @@ module.exports = {
    */
   fetchAuthenticatedUser(id) {
     return strapi
-      .query("user", "users-permissions")
-      .findOne({ id }, ["role", "budget_types", "avatar"]); // budget_types added
+      .query('user', 'users-permissions')
+      .findOne({ id }, ['role', 'budget_types', 'avatar']) // budget_types added
   },
   /**
    * Promise to remove a/an user.
    * @return {Promise}
    */
   async remove(params) {
-    const user = await strapi.query("user", "users-permissions").delete(params);
+    const user = await strapi.query('user', 'users-permissions').delete(params)
 
-    delete user.budgets;
-    delete user["budget_types"];
-    delete user.avatar;
+    delete user.budgets
+    delete user['budget_types']
+    delete user.avatar
 
-    return user;
-  },
-};
+    return user
+  }
+}

@@ -1,5 +1,5 @@
 {
-  "parser": "babel-eslint",
+  "parser": "@babel/eslint-parser",
   "extends": "eslint:recommended",
   "env": {
     "commonjs": true,
@@ -12,7 +12,8 @@
       "experimentalObjectRestSpread": true,
       "jsx": false
     },
-    "sourceType": "module"
+    "sourceType": "module",
+    "requireConfigFile": false
   },
   "globals": {
     "strapi": true
@@ -22,6 +23,7 @@
     "linebreak-style": ["error", "unix"],
     "no-console": 0,
     "quotes": ["error", "single"],
-    "semi": ["error", "always"]
+    "semi": ["error", "never"],
+    "comma-dangle": ["error", "never"]
   }
 }
