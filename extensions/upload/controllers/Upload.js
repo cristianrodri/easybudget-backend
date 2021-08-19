@@ -32,7 +32,7 @@ module.exports = {
       state: { user }
     } = ctx
 
-    if (user.avatar.id !== id) {
+    if (user.avatar?.id !== +id) {
       return ctx.unauthorized('You are not allowed to view this avatar')
     }
 
@@ -43,6 +43,8 @@ module.exports = {
     if (!file) {
       return ctx.notFound('file.notFound')
     }
+
+    delete file.related
 
     ctx.body = sanitize(file)
   },
@@ -90,7 +92,7 @@ module.exports = {
     if (userData?.avatar?.id) {
       if (!id)
         return ctx.badRequest(
-          'The user is using avatar currently. You can only update avatar by adding file id on params'
+          'The user is using avatar currently. You can only update the avatar by adding file id on the params'
         )
       if (userData.avatar.id !== +id)
         return ctx.badRequest(
@@ -123,6 +125,8 @@ module.exports = {
     }
 
     await strapi.plugins['upload'].services.upload.remove(file)
+
+    delete file.related
 
     ctx.body = sanitize(file)
   }
