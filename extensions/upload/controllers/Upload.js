@@ -82,6 +82,14 @@ module.exports = {
       })
     }
 
+    if (files.size > 1_000_000) {
+      throw strapi.errors.badRequest(null, {
+        errors: [
+          { id: 'Upload.status.exceeded', message: 'Files cannot exceed 1MB' }
+        ]
+      })
+    }
+
     const userData = await strapi.plugins[
       'users-permissions'
     ].services.user.fetch({
