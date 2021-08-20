@@ -7,7 +7,7 @@ const {
   webhook: webhookUtils
 } = require('strapi-utils')
 
-const { MEDIA_UPDATE, MEDIA_CREATE, MEDIA_DELETE } = webhookUtils.webhookEvents
+const { MEDIA_UPDATE, MEDIA_CREATE } = webhookUtils.webhookEvents
 
 const { UPDATED_BY_ATTRIBUTE, CREATED_BY_ATTRIBUTE } =
   contentTypesUtils.constants
