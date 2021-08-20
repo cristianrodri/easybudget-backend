@@ -13,18 +13,45 @@ module.exports = {
     }
 
     await strapi.query('user', 'users-permissions').update(params, values)
-    return strapi
-      .query('user', 'users-permissions')
-      .findOne(params, ['role', 'avatar'])
+    return strapi.query('user', 'users-permissions').findOne(params, ['avatar'])
   },
   /**
    * Promise to fetch authenticated user.
    * @return {Promise}
    */
-  fetchAuthenticatedUser(id) {
-    return strapi
+  async fetchAuthenticatedUser(id) {
+    const today = new Date()
+    const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1)
+    const nextMonth = new Date(today.getFullYear(), today.getMonth() + 1, 1)
+
+    const result = await strapi
       .query('user', 'users-permissions')
-      .findOne({ id }, ['role', 'budget_types', 'avatar']) // budget_types added
+      .model.query((qb) => {
+        qb.where('id', id)
+      })
+      .fetch({
+        withRelated: [
+          {
+            budgets: (qb) => {
+              qb.where('date', '>=', firstDayOfMonth).andWhere(
+                'date',
+                '<',
+                nextMonth
+              )
+            },
+            budget_types: (qb) => {
+              qb.column()
+            },
+            avatar: (qb) => {
+              qb.column()
+            }
+          }
+        ]
+      })
+
+    const fields = result.toJSON()
+
+    return fields
   },
   /**
    * Promise to remove a/an user.

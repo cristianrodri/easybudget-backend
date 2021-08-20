@@ -30,6 +30,10 @@
       "plugin": "users-permissions",
       "model": "user",
       "via": "budgets"
+    },
+    "date": {
+      "type": "datetime",
+      "required": true
     }
   }
 }

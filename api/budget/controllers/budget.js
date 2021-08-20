@@ -46,6 +46,7 @@ module.exports = {
     }
 
     ctx.request.body.user = user.id
+    ctx.request.body.date = new Date()
     const entity = await strapi.services.budget.create(ctx.request.body)
     return sanitizeEntity(entity, { model: strapi.models.budget })
   },
