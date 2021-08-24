@@ -8,7 +8,7 @@
     "increments": true,
     "timestamps": false,
     "draftAndPublish": true,
-    "privateAttributes": ["created_at", "updated_at", "published_at"]
+    "privateAttributes": ["created_at", "updated_at", "published_at", "user"]
   },
   "pluginOptions": {},
   "attributes": {
