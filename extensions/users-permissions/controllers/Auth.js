@@ -65,10 +65,40 @@ module.exports = {
         query.username = params.identifier
       }
 
+      const today = new Date()
+      const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1)
+      const nextMonth = new Date(today.getFullYear(), today.getMonth() + 1, 1)
+
       // Check if the user exists.
-      const user = await strapi
+      const result = await strapi
         .query('user', 'users-permissions')
-        .findOne(query, ['role', 'budget_types', 'avatar'])
+        .model.query((qb) => {
+          qb.where(
+            isEmail ? 'email' : 'username',
+            isEmail ? query.email : query.username
+          )
+        })
+        .fetch({
+          withRelated: [
+            {
+              budgets: (qb) => {
+                qb.where('date', '>=', firstDayOfMonth).andWhere(
+                  'date',
+                  '<',
+                  nextMonth
+                )
+              },
+              budget_types: (qb) => {
+                qb.column()
+              },
+              avatar: (qb) => {
+                qb.column()
+              }
+            }
+          ]
+        })
+
+      const user = result?.toJSON()
 
       if (!user) {
         return ctx.badRequest(
