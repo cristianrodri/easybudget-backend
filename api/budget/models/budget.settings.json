@@ -22,9 +22,9 @@
       "required": true,
       "min": 1
     },
-    "budget_type": {
-      "model": "budget-type",
-      "via": "budgets"
+    "category": {
+      "via": "budgets",
+      "model": "category"
     },
     "user": {
       "plugin": "users-permissions",

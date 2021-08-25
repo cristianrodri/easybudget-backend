@@ -39,7 +39,7 @@ module.exports = {
                 nextMonth
               )
             },
-            budget_types: (qb) => {
+            categories: (qb) => {
               qb.column()
             },
             avatar: (qb) => {
@@ -61,7 +61,7 @@ module.exports = {
     const user = await strapi.query('user', 'users-permissions').delete(params)
 
     delete user.budgets
-    delete user['budget_types']
+    delete user.categories
     delete user.avatar
 
     return user

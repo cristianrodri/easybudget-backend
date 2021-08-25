@@ -2,48 +2,48 @@
   "routes": [
     {
       "method": "GET",
-      "path": "/budget-types",
-      "handler": "budget-type.find",
+      "path": "/categories",
+      "handler": "category.find",
       "config": {
         "policies": []
       }
     },
     {
       "method": "GET",
-      "path": "/budget-types/count",
-      "handler": "budget-type.count",
+      "path": "/categories/count",
+      "handler": "category.count",
       "config": {
         "policies": []
       }
     },
     {
       "method": "GET",
-      "path": "/budget-types/:id",
-      "handler": "budget-type.findOne",
+      "path": "/categories/:id",
+      "handler": "category.findOne",
       "config": {
         "policies": []
       }
     },
     {
       "method": "POST",
-      "path": "/budget-types",
-      "handler": "budget-type.create",
+      "path": "/categories",
+      "handler": "category.create",
       "config": {
         "policies": []
       }
     },
     {
       "method": "PUT",
-      "path": "/budget-types/:id",
-      "handler": "budget-type.update",
+      "path": "/categories/:id",
+      "handler": "category.update",
       "config": {
         "policies": []
       }
     },
     {
       "method": "DELETE",
-      "path": "/budget-types/:id",
-      "handler": "budget-type.delete",
+      "path": "/categories/:id",
+      "handler": "category.delete",
       "config": {
         "policies": []
       }

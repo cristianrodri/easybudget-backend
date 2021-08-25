@@ -8,7 +8,7 @@
 const { sanitizeEntity } = require('strapi-utils')
 
 module.exports = {
-  // Get logged user budget-type
+  // Get user budgets
   async find(ctx) {
     const user = ctx.state.user
 
@@ -19,7 +19,7 @@ module.exports = {
     return sanitizeEntity(entity, { model: strapi.models.budget })
   },
 
-  // Get one income type by id
+  // Get one user budget by id
   async findOne(ctx) {
     const budget = await strapi.services.budget.findOne({
       id: ctx.params.id,
@@ -29,19 +29,25 @@ module.exports = {
     return sanitizeEntity(budget, { model: strapi.models.budget })
   },
 
-  // Create budget
+  // Create one user budget
   async create(ctx) {
     const user = ctx.state.user
-    const budgetTypeId = ctx.request.body.budget_type
+    const categoryId = ctx.request.body.category
 
-    const budgetType = await strapi.services['budget-type'].findOne({
-      id: budgetTypeId,
+    if (!categoryId) {
+      return ctx.unauthorized('You need to add the category id')
+    }
+
+    const category = await strapi.services.category.findOne({
+      id: categoryId,
       'user.id': user.id
     })
 
-    if (!budgetType) {
+    console.log(category)
+
+    if (!category) {
       return ctx.unauthorized(
-        'You cannot create budget on budget_type with id ' + budgetTypeId
+        'You cannot create budget on category with id ' + categoryId
       )
     }
 
@@ -51,22 +57,22 @@ module.exports = {
     return sanitizeEntity(entity, { model: strapi.models.budget })
   },
 
-  // update one income type
+  // Update one user budget
   async update(ctx) {
     const { id } = ctx.params
     const user = ctx.state.user
-    const budgetTypeId = ctx.request.body?.['budget_type']
+    const categoryId = ctx.request.body?.category
 
     // If budget type is provided in request.body, check if exist, otherwise return error
-    if (budgetTypeId) {
-      const budgetType = await strapi.services['budget-type'].findOne({
-        id: budgetTypeId,
+    if (categoryId) {
+      const category = await strapi.services.category.findOne({
+        id: categoryId,
         'user.id': user.id
       })
 
-      if (!budgetType)
+      if (!category)
         return ctx.badRequest(
-          'You cannot move this budget in budget-type with id ' + budgetTypeId
+          'You cannot move this budget in category with id ' + categoryId
         )
     }
 
@@ -78,6 +84,7 @@ module.exports = {
     return sanitizeEntity(entity, { model: strapi.models.budget })
   },
 
+  // Delete one user budget
   async delete(ctx) {
     const { id } = ctx.params
     const user = ctx.state.user
@@ -86,6 +93,7 @@ module.exports = {
 
     return sanitizeEntity(entity, { model: strapi.models.budget })
   },
+
   count(ctx) {
     return strapi.services.budget.count({
       'user.id': ctx.state.user.id,

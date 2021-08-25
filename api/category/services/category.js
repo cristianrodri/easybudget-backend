@@ -9,28 +9,28 @@ const { isDraft } = require('strapi-utils').contentTypes
 
 module.exports = {
   async create(data) {
-    const isDraftChecked = isDraft(data, strapi.models['budget-type'])
+    const isDraftChecked = isDraft(data, strapi.models.category)
     const validData = await strapi.entityValidator.validateEntityCreation(
-      strapi.models['budget-type'],
+      strapi.models.category,
       data,
       { isDraftChecked }
     )
 
-    const entry = await strapi.query('budget-type').create(validData)
+    const entry = await strapi.query('category').create(validData)
 
     return this.findOne({ id: entry.id }, [])
   },
   async update(params, data) {
-    await strapi.query('budget-type').update(params, data)
+    await strapi.query('category').update(params, data)
 
     // after updating get data without user and budget collections
-    return strapi.query('budget-type').findOne(params, [])
+    return strapi.query('category').findOne(params, [])
   },
   find(params) {
-    return strapi.query('budget-type').find(params, [])
+    return strapi.query('category').find(params, [])
   },
   findOne(params) {
-    return strapi.query('budget-type').findOne(params, [])
+    return strapi.query('category').findOne(params, [])
   },
   /**
    * Promise to delete a record
@@ -39,10 +39,10 @@ module.exports = {
    */
 
   async delete(params) {
-    const budgetType = await strapi.query('budget-type').delete(params)
+    const category = await strapi.query('category').delete(params)
 
-    delete budgetType.budgets
-    budgetType.user = budgetType.user.id
-    return budgetType
+    delete category.budgets
+    category.user = category.user.id
+    return category
   }
 }

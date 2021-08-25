@@ -62,16 +62,14 @@
     "avatar": {
       "model": "file",
       "via": "related",
-      "allowedTypes": [
-        "images"
-      ],
+      "allowedTypes": ["images"],
       "plugin": "upload",
       "required": false,
       "pluginOptions": {}
     },
-    "budget_types": {
+    "categories": {
       "via": "user",
-      "collection": "budget-type"
+      "collection": "category"
     },
     "budgets": {
       "via": "user",

@@ -88,7 +88,7 @@ module.exports = {
                   nextMonth
                 )
               },
-              budget_types: (qb) => {
+              categories: (qb) => {
                 qb.column()
               },
               avatar: (qb) => {

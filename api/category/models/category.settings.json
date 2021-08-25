@@ -1,8 +1,9 @@
 {
   "kind": "collectionType",
-  "collectionName": "budget_types",
+  "collectionName": "category",
   "info": {
-    "name": "budgetType"
+    "name": "category",
+    "description": ""
   },
   "options": {
     "increments": true,
@@ -24,10 +25,10 @@
     "user": {
       "plugin": "users-permissions",
       "model": "user",
-      "via": "budget_types"
+      "via": "categories"
     },
     "budgets": {
-      "via": "budget_type",
+      "via": "category",
       "collection": "budget"
     }
   }

@@ -24,9 +24,10 @@ module.exports = {
           })
 
           // delete all budget types related to the deleted user
-          user['budget_types'].forEach((entity) => {
-            strapi.services['budget-type'].delete({
-              id: entity.id
+          user.categories.forEach((entity) => {
+            strapi.services.category.delete({
+              id: entity.id,
+              user: user.id
             })
           })
         })
@@ -44,19 +45,21 @@ module.exports = {
         // delete all budgets related to the deleted user
         result.budgets.forEach((entity) => {
           strapi.services.budget.delete({
-            id: entity.id
+            id: entity.id,
+            user: result.id
           })
         })
 
         console.log('Budgets deleted after deleting user')
 
         // delete all budget types related to the deleted user
-        result['budget_types'].forEach((entity) => {
-          strapi.services['budget-type'].delete({
-            id: entity.id
+        result.categories.forEach((entity) => {
+          strapi.services.category.delete({
+            id: entity.id,
+            user: result.id
           })
         })
-        console.log('Budget types deleted after deleting user')
+        console.log('Categories deleted after deleting user')
       }
     }
   }

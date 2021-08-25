@@ -18,19 +18,19 @@ module.exports = {
 
     const entry = await strapi.query('budget').create(validData)
 
-    return this.findOne({ id: entry.id }, [])
+    return this.findOne({ id: entry.id }, ['category'])
   },
   async update(params, data) {
     await strapi.query('budget').update(params, data)
 
     // after updating get data without user and budget collections
-    return strapi.query('budget').findOne(params, [])
+    return strapi.query('budget').findOne(params, ['category'])
   },
   find(params) {
-    return strapi.query('budget').find(params, [])
+    return strapi.query('budget').find(params, ['category'])
   },
   findOne(params) {
-    return strapi.query('budget').findOne(params, [])
+    return strapi.query('budget').findOne(params, ['category'])
   },
   /**
    * Promise to delete a record
@@ -39,10 +39,8 @@ module.exports = {
    */
 
   async delete(params) {
-    const budget = await strapi.query('budget').delete(params, ['user'])
+    const budget = await strapi.query('budget').delete(params, ['category'])
 
-    budget['budget_type'] = budget['budget_type'].id
-    budget.user = budget.user.id
     return budget
   }
 }
