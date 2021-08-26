@@ -39,8 +39,6 @@ module.exports = {
    */
 
   async delete(params) {
-    const budget = await strapi.query('budget').delete(params, [])
-
-    return budget
+    return strapi.query('budget').delete(params, ['category'])
   }
 }
