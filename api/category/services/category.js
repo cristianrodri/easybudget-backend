@@ -39,10 +39,6 @@ module.exports = {
    */
 
   async delete(params) {
-    const category = await strapi.query('category').delete(params)
-
-    delete category.budgets
-    category.user = category.user.id
-    return category
+    return strapi.query('category').delete(params, [])
   }
 }

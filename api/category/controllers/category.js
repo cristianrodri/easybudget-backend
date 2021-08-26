@@ -91,6 +91,19 @@ module.exports = {
 
   // Delete one category
   async delete(ctx) {
+    const relatedBudgets = await strapi.services.budget.count({
+      'user.id': ctx.state.user.id,
+      category: ctx.params.id
+    })
+
+    if (relatedBudgets > 0) {
+      return ctx.badRequest(
+        `You are not be able to delete this category because it has ${relatedBudgets} budget${
+          relatedBudgets > 1 ? 's' : ''
+        } related to it`
+      )
+    }
+
     const entity = await strapi.services.category.delete({
       id: ctx.params.id,
       'user.id': ctx.state.user.id
