@@ -43,8 +43,6 @@ module.exports = {
       'user.id': user.id
     })
 
-    console.log(category)
-
     if (!category) {
       return ctx.unauthorized(
         'You cannot create budget on category with id ' + categoryId
@@ -63,7 +61,7 @@ module.exports = {
     const user = ctx.state.user
     const categoryId = ctx.request.body?.category
 
-    // If budget type is provided in request.body, check if exist, otherwise return error
+    // If category is provided in request.body, check if exist, otherwise return error
     if (categoryId) {
       const category = await strapi.services.category.findOne({
         id: categoryId,
