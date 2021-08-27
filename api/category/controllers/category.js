@@ -67,23 +67,45 @@ module.exports = {
   async update(ctx) {
     const { id } = ctx.params
     const { name, type } = ctx.request.body
+    const { user } = ctx.state
+
+    if (!type || !name)
+      return ctx.badRequest(`You need to provide the ${type ? 'name' : 'type'}`)
 
     const category = await strapi.services.category.findOne({
-      'user.id': ctx.state.user.id,
+      'user.id': user.id,
       name: name.trim(),
       type: type.trim()
     })
 
-    // if some budget type is found with same name and the same type (income or expense), the updated one cannot be updated with equal name
-    if (category) {
+    // if some category is found with same name and the same type (income or expense), the updated one cannot be updated with equal name. Only if params.id and category.id share the same id
+    if (category && category.id !== +id) {
       return ctx.badRequest(
         `You cannot repeat ${category.name} in '${category.type}' type.`
       )
     }
 
+    const relatedBudgets = await strapi.services.budget.count({
+      'user.id': ctx.state.user.id,
+      category: ctx.params.id
+    })
+
+    // If type of related category is different from ctx.request.body.type AND related budgets (from the related category) is greater than 0... cannot update the type
+    if (relatedBudgets > 0) {
+      const relatedCategory = await strapi.services.category.findOne({
+        'user.id': user.id,
+        id
+      })
+
+      if (relatedCategory?.type !== type)
+        return ctx.badRequest(
+          'You are not be able to update this category type because it has one or more budgets related'
+        )
+    }
+
     const entity = await strapi.services.category.update(
       { id, user: ctx.state.user.id },
-      { name }
+      { name, type }
     )
 
     return sanitizeEntity(entity, { model: strapi.models.category })
