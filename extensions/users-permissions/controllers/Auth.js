@@ -10,6 +10,7 @@
 const _ = require('lodash')
 const { sanitizeEntity } = require('strapi-utils')
 const validator = require('email-validator')
+const { getUserData } = require('../services/utils/utils')
 
 const formatError = (error) => [
   { messages: [{ id: error.id, message: error.message, field: error.field }] }
@@ -65,40 +66,11 @@ module.exports = {
         query.username = params.identifier
       }
 
-      const today = new Date()
-      const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1)
-      const nextMonth = new Date(today.getFullYear(), today.getMonth() + 1, 1)
+      const queryField = isEmail ? 'email' : 'username'
+      const paramsField = isEmail ? query.email : query.username
 
       // Check if the user exists.
-      const result = await strapi
-        .query('user', 'users-permissions')
-        .model.query((qb) => {
-          qb.where(
-            isEmail ? 'email' : 'username',
-            isEmail ? query.email : query.username
-          )
-        })
-        .fetch({
-          withRelated: [
-            {
-              budgets: (qb) => {
-                qb.where('date', '>=', firstDayOfMonth).andWhere(
-                  'date',
-                  '<',
-                  nextMonth
-                )
-              },
-              categories: (qb) => {
-                qb.column()
-              },
-              avatar: (qb) => {
-                qb.column()
-              }
-            }
-          ]
-        })
-
-      const user = result?.toJSON()
+      const user = await getUserData(queryField, paramsField)
 
       if (!user) {
         return ctx.badRequest(

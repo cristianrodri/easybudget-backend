@@ -1,5 +1,7 @@
 'use strict'
 
+const { getUserData } = require('./utils/utils')
+
 module.exports = {
   /**
    * Promise to edit a/an user.
@@ -20,38 +22,9 @@ module.exports = {
    * @return {Promise}
    */
   async fetchAuthenticatedUser(id) {
-    const today = new Date()
-    const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1)
-    const nextMonth = new Date(today.getFullYear(), today.getMonth() + 1, 1)
+    const user = await getUserData('id', id)
 
-    const result = await strapi
-      .query('user', 'users-permissions')
-      .model.query((qb) => {
-        qb.where('id', id)
-      })
-      .fetch({
-        withRelated: [
-          {
-            budgets: (qb) => {
-              qb.where('date', '>=', firstDayOfMonth).andWhere(
-                'date',
-                '<',
-                nextMonth
-              )
-            },
-            categories: (qb) => {
-              qb.column()
-            },
-            avatar: (qb) => {
-              qb.column()
-            }
-          }
-        ]
-      })
-
-    const fields = result.toJSON()
-
-    return fields
+    return user
   },
   /**
    * Promise to remove a/an user.
