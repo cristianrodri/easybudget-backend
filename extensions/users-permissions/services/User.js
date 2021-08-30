@@ -1,5 +1,6 @@
 'use strict'
 
+const _ = require('lodash')
 const { getUserData } = require('./utils/utils')
 
 module.exports = {
@@ -18,11 +19,11 @@ module.exports = {
     return strapi.query('user', 'users-permissions').findOne(params, ['avatar'])
   },
   /**
-   * Promise to fetch authenticated user.
+   * Promise to fetch a/an user.
    * @return {Promise}
    */
-  async fetchAuthenticatedUser(id) {
-    const user = await getUserData('id', id)
+  async findOne(params) {
+    const user = await getUserData('id', params.id, _.omit(params, 'id'))
 
     return user
   },

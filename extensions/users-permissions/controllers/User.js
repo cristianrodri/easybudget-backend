@@ -4,11 +4,38 @@ const _ = require('lodash')
 const { sanitizeEntity } = require('strapi-utils')
 const validator = require('email-validator')
 
+const sanitizeUser = (user) =>
+  sanitizeEntity(user, {
+    model: strapi.query('user', 'users-permissions').model
+  })
+
 const formatError = (error) => [
   { messages: [{ id: error.id, message: error.message, field: error.field }] }
 ]
 
 module.exports = {
+  /**
+   * Retrieve authenticated user.
+   * @return {Object|Array}
+   */
+  async me(ctx) {
+    const user = ctx.state.user
+
+    const data = await strapi.plugins[
+      'users-permissions'
+    ].services.user.findOne({
+      id: user.id,
+      ...ctx.query
+    })
+
+    if (!data) {
+      return ctx.badRequest(null, [
+        { messages: [{ id: 'No authorization header was found' }] }
+      ])
+    }
+
+    ctx.body = sanitizeUser(data)
+  },
   async update(ctx) {
     // custom code
     const { user: authUser, isAuthenticatedAdmin } = ctx.state

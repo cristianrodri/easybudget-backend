@@ -70,7 +70,7 @@ module.exports = {
       const paramsField = isEmail ? query.email : query.username
 
       // Check if the user exists.
-      const user = await getUserData(queryField, paramsField)
+      const user = await getUserData(queryField, paramsField, ctx.query)
 
       if (!user) {
         return ctx.badRequest(
