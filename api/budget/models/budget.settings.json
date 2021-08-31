@@ -2,17 +2,23 @@
   "kind": "collectionType",
   "collectionName": "budgets",
   "info": {
-    "name": "budget"
+    "name": "budget",
+    "description": ""
   },
   "options": {
     "increments": true,
     "timestamps": false,
     "draftAndPublish": true,
-    "privateAttributes": ["created_at", "updated_at", "published_at", "user"]
+    "privateAttributes": [
+      "created_at",
+      "updated_at",
+      "published_at",
+      "user"
+    ]
   },
   "pluginOptions": {},
   "attributes": {
-    "name": {
+    "description": {
       "type": "string",
       "required": true,
       "maxLength": 50
