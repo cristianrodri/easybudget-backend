@@ -49,11 +49,11 @@ module.exports = {
     ctx.body = sanitize(file)
   },
   async upload(ctx) {
-    const { user } = ctx.state
+    const { user, isAuthenticatedAdmin } = ctx.state
     const refId = +ctx.request.body.refId
 
     // only add or update file on your own account
-    if (user.id !== refId) {
+    if (user.id !== refId && !isAuthenticatedAdmin) {
       return ctx.unauthorized(
         'You are not allowed to add or update file on user with refId ' + refId
       )
