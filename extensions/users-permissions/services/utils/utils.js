@@ -7,21 +7,6 @@ const getUserData = async (
   params,
   { budgets_date_start, budgets_date_end } = {}
 ) => {
-  let firstDayOfMonth
-  let nextMonth
-
-  // If client dates are provided by ctx.query
-  if (budgets_date_start && budgets_date_end) {
-    firstDayOfMonth = new Date(budgets_date_start)
-    nextMonth = new Date(budgets_date_end)
-  } else {
-    const today = new Date()
-    firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1)
-    nextMonth = new Date(today.getFullYear(), today.getMonth() + 1, 1)
-  }
-  const greaterThanOrEqual = ['date', '>=', firstDayOfMonth]
-  const lessThan = ['date', '<', nextMonth]
-
   const result = await strapi
     .query('user', 'users-permissions')
     .model.query((qb) => {
@@ -33,7 +18,16 @@ const getUserData = async (
         'avatar',
         {
           'categories.budgets': (qb) => {
-            qb.where(...greaterThanOrEqual).andWhere(...lessThan)
+            // If client dates are provided by ctx.query
+            if (budgets_date_start && budgets_date_end) {
+              const firstDayOfMonth = new Date(budgets_date_start)
+              const nextMonth = new Date(budgets_date_end)
+              qb.where('date', '>=', firstDayOfMonth).andWhere(
+                'date',
+                '<',
+                nextMonth
+              )
+            }
           }
         }
       ]
