@@ -9,7 +9,12 @@
     "increments": true,
     "timestamps": true,
     "draftAndPublish": true,
-    "privateAttributes": ["created_at", "updated_at", "published_at", "user"]
+    "privateAttributes": [
+      "created_at",
+      "updated_at",
+      "published_at",
+      "user"
+    ]
   },
   "pluginOptions": {},
   "attributes": {
@@ -19,7 +24,10 @@
     },
     "type": {
       "type": "enumeration",
-      "enum": ["income", "expense"],
+      "enum": [
+        "income",
+        "expense"
+      ],
       "required": true
     },
     "user": {
