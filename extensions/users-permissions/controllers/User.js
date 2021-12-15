@@ -40,7 +40,7 @@ module.exports = {
     // custom code
     const { user: authUser, isAuthenticatedAdmin } = ctx.state
 
-    const { id } = ctx.params
+    const { id } = ctx.query
     const paramsIdIsEqualToAuthId = +id === authUser.id
 
     // only auth user and admin can update the data
@@ -99,7 +99,7 @@ module.exports = {
           null,
           formatError({
             id: 'Auth.form.error.username.taken',
-            message: 'username.alreadyTaken.',
+            message: 'Username already taken.',
             field: ['username']
           })
         )
