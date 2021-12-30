@@ -40,35 +40,18 @@ module.exports = {
     return category
   },
   async find(params) {
-    const { budgets_date_start, budgets_date_end } = params
-    const startDate = new Date(budgets_date_start)
-    const endDate = new Date(budgets_date_end)
-
     const categories = await strapi
       .query('category')
       .model.query((qb) => {
         qb.where('user', params['user.id'])
       })
-      .fetchAll({
-        withRelated: [
-          {
-            budgets: (qb) => {
-              if (budgets_date_start && budgets_date_end) {
-                qb.where('date', '>=', startDate).andWhere('date', '<', endDate)
-              } else if (budgets_date_start) {
-                qb.where('date', '>=', startDate)
-              } else if (budgets_date_end) {
-                qb.where('date', '<', endDate)
-              }
-            }
-          }
-        ]
-      })
+      .fetchAll()
       .then((data) => {
         const results = data.toJSON()
 
         const output = _.map(results, (result) => {
           result.money = _.sumBy(result.budgets, 'money')
+          delete result.budgets
           return result
         })
 

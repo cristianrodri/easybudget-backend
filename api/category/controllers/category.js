@@ -14,8 +14,7 @@ module.exports = {
     const user = ctx.state.user
 
     const entity = await strapi.services.category.find({
-      'user.id': user.id,
-      ...ctx.query
+      'user.id': user.id
     })
     return sanitizeEntity(entity, { model: strapi.models.category })
   },
