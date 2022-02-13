@@ -29,9 +29,9 @@
       "required": true,
       "min": 1
     },
-    "category": {
-      "via": "budgets",
-      "model": "category"
+    "categoryId": {
+      "model": "category",
+      "via": "budgets"
     },
     "user": {
       "plugin": "users-permissions",

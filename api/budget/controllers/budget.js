@@ -32,7 +32,7 @@ module.exports = {
   // Create one user budget
   async create(ctx) {
     const user = ctx.state.user
-    const categoryId = ctx.request.body.category
+    const categoryId = ctx.request.body.categoryId
 
     if (!categoryId) {
       return ctx.unauthorized('You need to add the category id')
