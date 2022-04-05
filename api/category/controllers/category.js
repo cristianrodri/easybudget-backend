@@ -113,9 +113,10 @@ module.exports = {
 
   // Delete one category
   async delete(ctx) {
+    console.log('here')
     const relatedBudgets = await strapi.services.budget.count({
       'user.id': ctx.state.user.id,
-      category: ctx.params.id
+      categoryId: ctx.params.id
     })
 
     if (relatedBudgets > 0) {
