@@ -27,7 +27,16 @@ module.exports = {
     return strapi.query('budget').findOne(params, [])
   },
   find(params) {
-    return strapi.query('budget').find(params, [])
+    const realParams = { ...params }
+
+    // _categorydata property is delete before the query is called because doesn't exit in budget model
+    delete params._categorydata
+    return (
+      strapi
+        .query('budget')
+        // If _categorydata property is provided into the API query, then get budgets data with categories data, otherwise just received the category id by providing and emtpy array
+        .find(params, realParams?._categorydata ? undefined : [])
+    )
   },
   findOne(params) {
     return strapi.query('budget').findOne(params, [])
