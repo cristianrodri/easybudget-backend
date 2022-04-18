@@ -18,7 +18,7 @@ module.exports = {
 
     const entry = await strapi.query('budget').create(validData)
 
-    return this.findOne({ id: entry.id }, [])
+    return entry
   },
   async update(params, data) {
     await strapi.query('budget').update(params, data)
