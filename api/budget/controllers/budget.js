@@ -72,7 +72,7 @@ module.exports = {
 
       if (!category)
         return ctx.badRequest(
-          'You cannot move this budget in category with id ' + categoryId
+          `You cannot move this budget in category with id ${categoryId} because doesn't exist in the user categories collection`
         )
     }
 
