@@ -32,7 +32,7 @@ module.exports = {
   // Create one user budget
   async create(ctx) {
     const user = ctx.state.user
-    const categoryId = ctx.request.body.categoryId
+    const categoryId = ctx.request.body.category
 
     if (!categoryId) {
       return ctx.unauthorized('You need to add the category id')
@@ -63,7 +63,7 @@ module.exports = {
     const user = ctx.state.user
     const categoryId = ctx.request.body?.category
 
-    // If category is provided in request.body, check if exist, otherwise return error
+    // If category is provided in request.body, check if it exist, otherwise return an error
     if (categoryId) {
       const category = await strapi.services.category.findOne({
         id: categoryId,
