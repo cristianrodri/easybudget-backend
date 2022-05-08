@@ -35,6 +35,7 @@ module.exports = {
 
     if (category) {
       category.money = budgetsMoney(category.budgets)
+      delete category.budgets
     }
 
     return category
