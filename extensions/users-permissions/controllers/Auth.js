@@ -10,7 +10,6 @@
 const _ = require('lodash')
 const { sanitizeEntity } = require('strapi-utils')
 const validator = require('email-validator')
-const { getUserData } = require('../services/utils/utils')
 
 const formatError = (error) => [
   { messages: [{ id: error.id, message: error.message, field: error.field }] }
@@ -66,11 +65,10 @@ module.exports = {
         query.username = params.identifier
       }
 
-      const queryField = isEmail ? 'email' : 'username'
-      const paramsField = isEmail ? query.email : query.username
-
       // Check if the user exists.
-      const user = await getUserData(queryField, paramsField, ctx.query)
+      const user = await strapi
+        .query('user', 'users-permissions')
+        .findOne(query, [])
 
       if (!user) {
         return ctx.badRequest(
