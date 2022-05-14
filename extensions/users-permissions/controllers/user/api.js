@@ -3,12 +3,12 @@
 const _ = require('lodash')
 const { sanitizeEntity } = require('strapi-utils')
 
-const sanitizeUser = user =>
+const sanitizeUser = (user) =>
   sanitizeEntity(user, {
     model: strapi.query('user', 'users-permissions').model
   })
 
-const formatError = error => [
+const formatError = (error) => [
   { messages: [{ id: error.id, message: error.message, field: error.field }] }
 ]
 
@@ -82,7 +82,9 @@ module.exports = {
     }
 
     try {
-      const data = await strapi.plugins['users-permissions'].services.user.add(user)
+      const data = await strapi.plugins['users-permissions'].services.user.add(
+        user
+      )
 
       ctx.created(sanitizeUser(data))
     } catch (error) {
@@ -95,6 +97,27 @@ module.exports = {
    */
 
   async update(ctx) {
+    // Custom code
+    const { user: authUser } = ctx.state
+
+    const { id } = ctx.query
+    const paramsIdIsEqualToAuthId = +id === authUser.id
+
+    // Only auth user and admin can update the data
+    if (!paramsIdIsEqualToAuthId) {
+      return ctx.unauthorized('You are not allowed to update this user')
+    }
+
+    // If some not accepted property is passed into ctx.request.body, every loop method stop returning false
+    const allowedUpdates = Object.keys(ctx.request.body).every((prop) =>
+      ['username', 'email', 'password'].includes(prop)
+    )
+
+    if (!allowedUpdates) {
+      return ctx.badRequest('You can only update email, username and password')
+    }
+
+    // Strapi code
     const advancedConfigs = await strapi
       .store({
         environment: '',
@@ -104,7 +127,6 @@ module.exports = {
       })
       .get()
 
-    const { id } = ctx.params
     const { email, username, password } = ctx.request.body
 
     const user = await strapi.plugins['users-permissions'].services.user.fetch({
@@ -119,7 +141,11 @@ module.exports = {
       return ctx.badRequest('username.notNull')
     }
 
-    if (_.has(ctx.request.body, 'password') && !password && user.provider === 'local') {
+    if (
+      _.has(ctx.request.body, 'password') &&
+      !password &&
+      user.provider === 'local'
+    ) {
       return ctx.badRequest('password.notNull')
     }
 
@@ -166,7 +192,10 @@ module.exports = {
       delete updateData.password
     }
 
-    const data = await strapi.plugins['users-permissions'].services.user.edit({ id }, updateData)
+    const data = await strapi.plugins['users-permissions'].services.user.edit(
+      { id },
+      updateData
+    )
 
     ctx.send(sanitizeUser(data))
   }
