@@ -71,7 +71,7 @@ module.exports = {
       // Check if the user exists.
       const user = await strapi
         .query('user', 'users-permissions')
-        .findOne(query)
+        .findOne(query, [])
 
       if (!user) {
         return ctx.badRequest(
