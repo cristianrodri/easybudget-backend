@@ -28,13 +28,8 @@ const sanitize = (data, options = {}) => {
 module.exports = {
   async findOne(ctx) {
     const {
-      params: { id },
-      state: { user }
+      params: { id }
     } = ctx
-
-    if (user.avatar?.id !== +id) {
-      return ctx.unauthorized('You are not allowed to view this avatar')
-    }
 
     const file = await strapi.plugins.upload.services.upload.fetch({
       id
