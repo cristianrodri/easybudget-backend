@@ -7,7 +7,7 @@
 
 const _ = require('lodash')
 const adminUploadController = require('strapi-plugin-upload/controllers/upload/admin')
-const apiUploadController = require('strapi-plugin-upload/controllers/upload/api')
+const apiUploadController = require('./upload/api')
 const { sanitizeEntity } = require('strapi-utils/lib')
 
 const resolveController = (ctx) => {
