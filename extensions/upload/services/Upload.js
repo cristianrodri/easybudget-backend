@@ -73,12 +73,6 @@ module.exports = {
     const { fileInfo } = data
     const fileData = await this.enhanceFile(file, fileInfo)
 
-    // keep a constant hash
-    _.assign(fileData, {
-      hash: dbFile.hash,
-      ext: dbFile.ext
-    })
-
     // execute delete function of the provider
     if (dbFile.provider === config.provider) {
       await strapi.plugins.upload.provider.delete(dbFile)
