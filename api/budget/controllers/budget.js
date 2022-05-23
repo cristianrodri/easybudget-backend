@@ -50,7 +50,7 @@ module.exports = {
     }
 
     ctx.request.body.user = user.id
-    ctx.request.body.date = new Date()
+    ctx.request.body.date = ctx.request.body?.date ?? new Date()
     ctx.request.body.category = category
     const entity = await strapi.services.budget.create(ctx.request.body)
 
