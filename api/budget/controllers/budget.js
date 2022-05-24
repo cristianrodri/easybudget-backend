@@ -29,30 +29,16 @@ module.exports = {
     return sanitizeEntity(budget, { model: strapi.models.budget })
   },
 
-  // Create one user budget
+  // Create mulitple budgets
   async create(ctx) {
     const user = ctx.state.user
-    const categoryId = ctx.request.body.category
 
-    if (!categoryId) {
-      return ctx.unauthorized('You need to add the category id')
+    let entity
+
+    for (const budget of ctx.request.body) {
+      budget.user = user.id
+      entity = await strapi.services.budget.create(budget)
     }
-
-    const category = await strapi.services.category.findOne({
-      id: categoryId,
-      'user.id': user.id
-    })
-
-    if (!category) {
-      return ctx.unauthorized(
-        'You cannot create budget on category with id ' + categoryId
-      )
-    }
-
-    ctx.request.body.user = user.id
-    ctx.request.body.date = ctx.request.body?.date ?? new Date()
-    ctx.request.body.category = category
-    const entity = await strapi.services.budget.create(ctx.request.body)
 
     return sanitizeEntity(entity, { model: strapi.models.budget })
   },
