@@ -109,7 +109,6 @@ coverage
 .env
 .env.example
 todo.md
-yarn.lock
 package-json.lock
 license.txt
 exports
