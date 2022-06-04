@@ -26,21 +26,6 @@ const sanitize = (data, options = {}) => {
 }
 
 module.exports = {
-  async find(ctx) {
-    const user = await strapi.plugins[
-      'users-permissions'
-    ].services.user.findOne({
-      id: ctx.state.user.id,
-      budgets_date_start: new Date().toISOString(),
-      budgets_date_end: new Date().toISOString()
-    })
-
-    if (!user?.avatar) {
-      return ctx.notFound('File not found')
-    }
-
-    ctx.body = sanitize(user.avatar)
-  },
   async findOne(ctx) {
     const {
       params: { id }
