@@ -31,17 +31,37 @@ module.exports = {
       params: { id }
     } = ctx
 
-    const file = await strapi.plugins.upload.services.upload.fetch({
-      id
+    // If the id param is provided, search for the related file id
+    if (id) {
+      const file = await strapi.plugins.upload.services.upload.fetch({
+        id
+      })
+
+      if (!file) {
+        return ctx.notFound('File not found')
+      }
+
+      delete file.related
+
+      ctx.body = sanitize(file)
+
+      return
+    }
+
+    // Otherwise the api is called with "upload/file/user" route and return the authenticated user data and get the avatar
+    const user = await strapi.plugins[
+      'users-permissions'
+    ].services.user.findOne({
+      id: ctx.state.user.id,
+      budgets_date_start: new Date().toISOString(),
+      budgets_date_end: new Date().toISOString()
     })
 
-    if (!file) {
+    if (!user?.avatar) {
       return ctx.notFound('File not found')
     }
 
-    delete file.related
-
-    ctx.body = sanitize(file)
+    ctx.body = sanitize(user.avatar)
   },
   async upload(ctx) {
     const { user, isAuthenticatedAdmin } = ctx.state
