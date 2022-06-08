@@ -537,12 +537,10 @@ module.exports = {
         user: sanitizedUser
       })
     } catch (err) {
-      const adminError = _.includes(err.message, 'username')
-        ? {
-          id: 'Auth.form.error.username.taken',
-          message: 'Username already taken'
-        }
-        : { id: 'Auth.form.error.email.taken', message: 'Email already taken' }
+      const adminError = {
+        id: 'Auth.form.error.username.taken',
+        message: 'Username already taken'
+      }
 
       ctx.badRequest(null, formatError(adminError))
     }
