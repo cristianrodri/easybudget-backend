@@ -78,7 +78,7 @@ module.exports = {
           null,
           formatError({
             id: 'Auth.form.error.invalid',
-            message: 'Identifier or password invalid.'
+            message: 'User not found'
           })
         )
       }
@@ -127,7 +127,7 @@ module.exports = {
           null,
           formatError({
             id: 'Auth.form.error.invalid',
-            message: 'Identifier or password invalid.'
+            message: 'Password invalid'
           })
         )
       } else {
