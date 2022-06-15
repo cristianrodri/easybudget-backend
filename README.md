@@ -29,5 +29,5 @@ The files of the project is saved in cloudinary servers, so you need to add your
 ### Run the server
 
 ```
-  yarn run develop
+  yarn develop
 ```
